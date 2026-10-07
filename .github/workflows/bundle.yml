@@ -1,0 +1,35 @@
+name: Profiles
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Fails on any invalid profile. On a pull request the rebuilt files are
+      # thrown away; on main they are committed below.
+      - name: Validate and rebuild
+        run: python tools/build_bundle.py
+
+      - name: Commit the rebuilt bundle
+        if: github.event_name == 'push'
+        run: |
+          if [ -n "$(git status --porcelain dist GAMES.md)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add dist GAMES.md
+            git commit -m "Rebuild profiles bundle"
+            git push
+          fi
