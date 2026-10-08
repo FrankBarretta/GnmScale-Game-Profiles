@@ -122,8 +122,8 @@ fbsr_vibrance=0.00
 fbsr_temperature=0.00
 fbsr_tint=0.00
 fbsr_gamma=0.00
-@profile bloodborne ps4-slim-smoothness
-name=Smoothness
+@profile bloodborne ps4-slim-framegen
+name=PS4 Slim - Frame Gen
 description=Frame generation only, with finer motion estimation (50%). Upscaling off to leave the memory and the GPU to the generated frames.
 author=FrankBarretta
 order=3
