@@ -40,6 +40,7 @@ MODELS = {
     "fbsr3-pico-fidelity-femto",
     "fsr1-rcas",
     "fbsr-v2",
+    "fbsr-v3",
 }
 MENU_KEYS = {"l3r3", "l1r1", "l2r2", "touchpad", "off"}
 
