@@ -29,34 +29,50 @@ I profili segnati **Da verificare** non sono ancora stati provati su console
 dall'autore. Sono un punto di partenza, non una garanzia. L'elenco completo è
 in [GAMES.md](GAMES.md).
 
-## Struttura
+## Aggiungere un profilo
 
+1. In `games/` crea una cartella per il gioco, col titolo e i suoi TITLE_ID
+   (tutte le edizioni che devono avere gli stessi profili):
+
+   ```
+   games/Bloodborne [CUSA00900 CUSA00207 CUSA03173 CUSA03023]/
+   ```
+
+2. Mettici dentro il profilo come file `.ini`. Il nome del file è il nome
+   mostrato sulla console:
+
+   ```
+   games/Bloodborne [CUSA00900 CUSA00207 CUSA03173 CUSA03023]/PS4 Slim - Frame Gen.ini
+   ```
+
+   Il contenuto è un `config.ini` di GnmScale (`chiave=valore`), quindi puoi
+   copiare la configurazione del gioco dalla console così com'è. Le chiavi che
+   un profilo non porta (lingua, diagnostica) vengono ignorate dall'app.
+
+3. Fai commit e push su `main`. La GitHub Action genera
+   `dist/profiles.bundle` e `GAMES.md`, e l'app scarica il nuovo profilo la
+   prossima volta che scegli **Scarica i profili dello sviluppatore**.
+
+Nient'altro. Un profilo cambia solo le voci che elenca, e tutte le altre
+impostazioni del gioco restano come sono.
+
+### Righe facoltative
+
+```ini
+description=Frame generation 2x: da 30 a 60 fps a schermo.
+author=FrankBarretta
+order=1
+status=tested
 ```
-games/
-  <gioco>/               una cartella per gioco, nome [a-z0-9_-]
-    game.ini             il nome del gioco e tutti i suoi TITLE_ID
-    <profilo>.ini        un file per profilo
-templates/               da copiare per un gioco o un profilo nuovo
-tools/build_bundle.py    controlla tutto e genera il pacchetto
-dist/profiles.bundle     quello che l'app scarica (generato, non modificarlo)
-GAMES.md                 elenco di giochi e profili (generato)
-```
 
-Un profilo vale per tutti i TITLE_ID del `game.ini` del suo gioco: le
-edizioni regionali condividono gli stessi file.
+`name` sostituisce il nome del file (max 47 byte), `description` è una riga
+(max 255 byte), `order` è la posizione nell'elenco (altrimenti in ordine di
+nome), `status=tested` segna il profilo come verificato su console.
 
-Il formato dei file, l'elenco completo delle chiavi e dei valori ammessi e il
-formato del pacchetto sono descritti nel [README in inglese](README.md#layout).
-Le chiavi sono le stesse di `config.ini` di GnmScale. Un profilo cambia solo le
-voci che elenca, e tutte le altre impostazioni del gioco restano come sono.
+### Controllo in locale
 
-## Aggiungere o modificare profili
-
-1. Copia `templates/` in `games/<gioco>/` (o modifica un file esistente).
-2. Lancia `python tools/build_bundle.py`. Controlla ogni file, poi rigenera
-   `dist/profiles.bundle` e `GAMES.md`. Correggi quello che segnala.
-3. Fai il commit di tutto, compresi `dist/` e `GAMES.md`.
-
-A ogni push su `main` la GitHub Action lancia lo stesso script, e se il
-pacchetto non è aggiornato lo rigenera e fa il commit. Su una pull request si
-limita a controllare.
+`python tools/build_bundle.py` fa quello che fa la Action: segnala i problemi
+(nessun TITLE_ID nel nome della cartella, lo stesso TITLE_ID in due giochi, un
+nome troppo lungo) e rigenera `dist/profiles.bundle` e `GAMES.md`. Non è
+obbligatorio lanciarlo. Su una pull request la Action si limita a controllare.
+Il formato del pacchetto è descritto nel [README in inglese](README.md#bundle-format).
